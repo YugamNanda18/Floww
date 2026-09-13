@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: ledgerx_mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ledgerx
+      MONGO_INITDB_ROOT_PASSWORD: ledgerx_secret
+      MONGO_INITDB_DATABASE: ledgerx
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - ledgerx_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: ledgerx_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass ledgerx_redis_pass
+    volumes:
+      - redis_data:/data
+    networks:
+      - ledgerx_net
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: ledgerx_mongo_express
+    restart: unless-stopped
+    ports:
+      - '8081:8081'
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ledgerx
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ledgerx_secret
+      ME_CONFIG_MONGODB_URL: mongodb://ledgerx:ledgerx_secret@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - mongo
+    networks:
+      - ledgerx_net
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  ledgerx_net:
+    driver: bridge

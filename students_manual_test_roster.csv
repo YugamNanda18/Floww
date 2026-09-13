@@ -1,0 +1,31 @@
+department,year,semester,batch,academicYear,rollNumber,name,email,password,status,totalDemanded,totalPaid,outstandingBalance,lateFeeAccrued,scholarshipConcession,notes
+CE,2,3,2024-2028,2023-24,CE2401,Rajesh Koothrappali,ce.paid@demo.com,demo123,Paid,306000,306000,0,0,0,"Civil Engineering student passionate about structural engineering, earthquake resilience, and smart city infrastructure."
+CE,2,3,2024-2028,2023-24,CE2402,Alia Bhatt,ce.pending@demo.com,demo123,Paid,306000,286000,0,0,0,"Civil Engineering undergraduate focusing on environmental engineering, geotechnical analysis, and GIS mapping."
+CE,2,3,2024-2028,2023-24,CE2403,Geeta Bhat,geeta@demo.com,demo123,Pending,306000,204000,102000,0,0,"Aspiring transportation engineer studying sustainable urban mobility, highway materials, and hydrology."
+CSE,1,1,2025-2029,2025-26,CSE1206,Shivang Gupta,shivang@demo.com,demo123,Paid,110000,110000,0,0,0,biology
+CSE,3,5,2023-2027,2023-24,CSE2303,Rohit Gupta,yugamnanda12@gmail.com,demo123,Paid,475000,476500,0,0,0,3rd Year Computer Science student building full-stack applications and high-throughput backend microservices.
+CSE,1,1,2025-2029,2025-26,CSE2385,Aditya Roy,student.cse2385@demo.com,demo123,Pending,110000,0,110000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE2501,Rahul Sharma,student@demo.com,demo123,Paid,110000,110000,0,0,0,"B.Tech CSE student (Sem 1) interested in Data Structures, Web Development, and Competitive Coding."
+CSE,1,1,2025-2029,2025-26,CSE2502,Aarav Gupta,cse.pending@demo.com,demo123,Pending,110000,35000,60000,0,0,Freshman CSE engineer passionate about Machine Learning algorithms and open-source software.
+CSE,1,1,2025-2029,2025-26,CSE_DEF_42754,QA Defaulter Student,def.cse_def_42754@demo.com,demo123,Pending,110000,0,110000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_DEF_55233,QA Defaulter Student,def.cse_def_55233@demo.com,demo123,Pending,110000,0,110000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_DEF_63340,QA Defaulter Student,def.cse_def_63340@demo.com,demo123,Pending,110000,0,110000,0,0,"B.Tech Student (CSE, Year 1, Semester 1)"
+CSE,1,1,2025-2029,2025-26,CSE_QA2_40756,QA Second Student,qa2.cse_qa2_40756@demo.com,demo123,Pending,110000,0,110000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_QA2_53171,QA Second Student,qa2.cse_qa2_53171@demo.com,demo123,Pending,110000,0,110000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_QA2_60550,QA Second Student,qa2.cse_qa2_60550@demo.com,demo123,Pending,110000,0,110000,0,0,"B.Tech Student (CSE, Year 1, Semester 1)"
+CSE,1,1,2025-2029,2025-26,CSE_QA_11359,QA Test Student,qa.cse_qa_11359@demo.com,demo123,Pending,110000,25000,85000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_QA_13456,QA Test Student,qa.cse_qa_13456@demo.com,demo123,Pending,110000,25000,85000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_QA_36631,QA Test Student,qa.cse_qa_36631@demo.com,demo123,Pending,110000,25000,85000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_QA_47638,QA Test Student,qa.cse_qa_47638@demo.com,demo123,Pending,110000,25000,85000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_QA_51912,QA Test Student,qa.cse_qa_51912@demo.com,demo123,Pending,110000,25000,85000,0,0,"B.Tech Student (CSE, Year 1, Semester 1)"
+CSE,1,1,2025-2029,2025-26,CSE_QA_56233,QA Test Student,qa.cse_qa_56233@demo.com,demo123,Pending,110000,25000,85000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_QA_78134,QA Test Student,qa.cse_qa_78134@demo.com,demo123,Pending,110000,0,110000,0,0,B.Tech Student enrolled in Semester 1
+CSE,1,1,2025-2029,2025-26,CSE_QA_95329,QA Test Student,qa.cse_qa_95329@demo.com,demo123,Pending,110000,25000,85000,0,0,B.Tech Student enrolled in Semester 1
+CSE,2,3,2024-2028,2024-25,CSE_SEM3_1171,Realtime Sync Student,sync.cse_sem3_1171@demo.com,demo123,Pending,95000,0,95000,0,0,"B.Tech Student (CSE, Year 2, Semester 3)"
+CSE,2,3,2025-2029,2024-25,CSE_SEM3_5154,Realtime Sync Student,sync.cse_sem3_5154@demo.com,demo123,Pending,95000,0,95000,0,0,"B.Tech Student (CSE, Year 2, Semester 3)"
+ECE,2,3,2024-2028,2023-24,ECE2401,Varun Dhawan,ece.paid@demo.com,demo123,Paid,306000,306000,0,0,0,"2nd Year ECE student focusing on Embedded Systems, IoT architecture, and digital signal processing."
+ECE,2,3,2024-2028,2023-24,ECE2402,Ritika Sen,ece.pending@demo.com,demo123,Pending,306000,204000,77000,0,0,"ECE undergraduate passionate about VLSI design, semiconductor devices, and robotic automation."
+ECE,2,3,2024-2028,2023-24,ECE2403,Karan Joshi,karan@demo.com,demo123,Pending,306000,204000,102000,0,0,"Electronics enthusiast exploring wireless communications, RF circuits, and antenna modeling."
+ME,3,5,2023-2027,2023-24,ME2301,Sameer Khan,me.paid@demo.com,demo123,Paid,475000,475000,0,0,0,"Senior Mechanical Engineering student specialized in CAD/CAM modeling, CFD analysis, and automotive design."
+ME,3,5,2023-2027,2023-24,ME2302,Pooja Bhatia,me.pending@demo.com,demo123,Pending,475000,380000,80000,0,0,"Mechanical engineer pursuing research in sustainable thermal systems, renewable energy, and robotics."
+ME,3,5,2023-2027,2023-24,ME2303,Sanjay Iyer,sanjay@demo.com,demo123,Pending,475000,380000,95000,0,0,"Mechanical Engineering senior exploring Mechatronics, industrial additive manufacturing, and FEA simulations."
