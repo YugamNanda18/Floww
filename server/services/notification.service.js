@@ -32,14 +32,23 @@ export const getPortalBaseUrl = () => {
 
 const getTransporter = () => {
   if (transporter) return transporter;
-  if (process.env.SMTP_HOST && process.env.SMTP_USER) {
+  if (process.env.SMTP_USER) {
+    const isGmail = (process.env.SMTP_HOST || '').includes('gmail') || (process.env.SMTP_USER || '').includes('gmail.com');
     transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT) || 587,
+      ...(isGmail
+        ? { service: 'gmail' }
+        : {
+            host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            port: parseInt(process.env.SMTP_PORT) || 587,
+            secure: parseInt(process.env.SMTP_PORT) === 465,
+          }),
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      connectionTimeout: 5000,
+      greetingTimeout: 5000,
+      socketTimeout: 8000,
     });
   }
   return transporter;
@@ -296,41 +305,49 @@ export const sendMassRealtimeFeeReminders = async (adminUser = null) => {
       demandsByStudent[sId].push(d);
     }
 
-    const reminderResults = [];
-
+    const studentsToRemind = [];
     for (const student of students) {
       const sDemands = demandsByStudent[student._id.toString()] || [];
       const totalOutstanding = sDemands.reduce((acc, d) => acc + (d.outstandingAmount || 0), 0);
       const totalLateFee = sDemands.reduce((acc, d) => acc + (d.lateFeeAccrued || 0), 0);
 
       if (totalOutstanding > 0 || totalLateFee > 0) {
-        const res = await sendRealtimeFeeDueReminder({
+        studentsToRemind.push({
           student,
           totalOutstanding,
           totalLateFee,
           demands: sDemands,
         });
-        reminderResults.push(res);
       }
     }
 
     if (adminUser) {
+      const totalOutstandingAmount = studentsToRemind.reduce((acc, s) => acc + (s.totalOutstanding || 0), 0);
       await AuditLog.create({
         adminId: adminUser._id,
         adminName: adminUser.name,
         adminEmail: adminUser.email,
         action: 'mass_fee_reminder_sent',
         targetEntity: 'User',
-        amountAffected: reminderResults.reduce((acc, r) => acc + (parseFloat(r.totalPayable.replace(/,/g, '')) || 0), 0),
-        reason: `Real-time fee due reminders dispatched to ${reminderResults.length} students with outstanding balances.`,
+        amountAffected: totalOutstandingAmount,
+        reason: `Real-time fee due reminders dispatched to ${studentsToRemind.length} students with outstanding balances.`,
         ipAddress: '127.0.0.1',
       });
     }
 
+    // Process email deliveries in background (concurrent parallel batches of 5)
+    (async () => {
+      console.log(`[MASS REMINDER BACKGROUND] Starting email delivery to ${studentsToRemind.length} students...`);
+      for (let i = 0; i < studentsToRemind.length; i += 5) {
+        const batch = studentsToRemind.slice(i, i + 5);
+        await Promise.allSettled(batch.map((item) => sendRealtimeFeeDueReminder(item)));
+      }
+      console.log(`[MASS REMINDER BACKGROUND] Completed dispatch to ${studentsToRemind.length} students.`);
+    })().catch((err) => console.error('[BACKGROUND REMINDER ERROR]', err.message));
+
     return {
       success: true,
-      totalStudentsNotified: reminderResults.length,
-      reminders: reminderResults,
+      totalStudentsNotified: studentsToRemind.length,
     };
   } catch (err) {
     console.error('[MASS REMINDER ERROR]', err.message);

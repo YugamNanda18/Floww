@@ -62,7 +62,13 @@ export const getAdminStudents = async (req, res, next) => {
       const totalPaid = sDemands.reduce((acc, d) => acc + (d.totalPaid || 0), 0);
       const totalOutstanding = sDemands.reduce((acc, d) => acc + (d.outstandingAmount || 0), 0);
       const totalLateFee = sDemands.reduce((acc, d) => acc + (d.lateFeeAccrued || 0), 0);
-      const overdueDemands = sDemands.filter((d) => d.status === 'overdue');
+      const now = new Date();
+      const overdueDemands = sDemands.filter((d) => 
+        d.status === 'overdue' || 
+        (new Date(d.dueDate) < now && (d.outstandingAmount || 0) > 0) ||
+        ((d.outstandingAmount || 0) > 0 && (d.totalPaid || 0) <= 0) ||
+        (d.lateFeeAccrued || 0) > 0
+      );
       const isDefaulter = overdueDemands.length > 0;
 
       let feeStatus = 'paid';
@@ -860,12 +866,13 @@ export const triggerIndividualDueReminder = async (req, res, next) => {
       });
     }
 
-    const reminder = await sendRealtimeFeeDueReminder({
+    // Dispatch real-time reminder asynchronously without blocking HTTP response
+    sendRealtimeFeeDueReminder({
       student,
       totalOutstanding,
       totalLateFee,
       demands,
-    });
+    }).catch((err) => console.warn(`[INDIVIDUAL REMINDER BG ERROR] ${student.email}:`, err.message));
 
     await AuditLog.create({
       adminId: req.user._id,
@@ -881,7 +888,13 @@ export const triggerIndividualDueReminder = async (req, res, next) => {
     return res.json({
       success: true,
       message: `Real-time fee due reminder dispatched to ${student.name} (${student.email})!`,
-      data: reminder,
+      data: {
+        studentId: student._id,
+        rollNumber: student.rollNumber,
+        name: student.name,
+        email: student.email,
+        totalOutstanding: (totalOutstanding / 100).toLocaleString('en-IN', { minimumFractionDigits: 2 }),
+      },
     });
   } catch (err) {
     next(err);

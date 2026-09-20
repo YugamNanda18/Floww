@@ -97,17 +97,18 @@ export const login = async (req, res, next) => {
     let overdueDemandsCount = 0;
     if (user.role === 'student') {
       const now = new Date();
-      const overdueDemands = await FeeDemand.find({
+      const blockingDemands = await FeeDemand.find({
         student: user._id,
         outstandingAmount: { $gt: 0 },
         $or: [
           { status: 'overdue' },
           { dueDate: { $lt: now } },
           { lateFeeAccrued: { $gt: 0 } },
+          { totalPaid: { $lte: 0 } },
         ],
       });
-      isDefaulter = overdueDemands.length > 0;
-      overdueDemandsCount = overdueDemands.length;
+      isDefaulter = blockingDemands.length > 0;
+      overdueDemandsCount = blockingDemands.length;
     }
 
     const userObj = user.toObject ? user.toObject() : { ...user };
@@ -207,17 +208,18 @@ export const getMe = async (req, res, next) => {
     let overdueDemandsCount = 0;
     if (req.user.role === 'student') {
       const now = new Date();
-      const overdueDemands = await FeeDemand.find({
+      const blockingDemands = await FeeDemand.find({
         student: req.user._id,
         outstandingAmount: { $gt: 0 },
         $or: [
           { status: 'overdue' },
           { dueDate: { $lt: now } },
           { lateFeeAccrued: { $gt: 0 } },
+          { totalPaid: { $lte: 0 } },
         ],
       });
-      isDefaulter = overdueDemands.length > 0;
-      overdueDemandsCount = overdueDemands.length;
+      isDefaulter = blockingDemands.length > 0;
+      overdueDemandsCount = blockingDemands.length;
     }
 
     const userObj = req.user.toObject ? req.user.toObject() : req.user;
