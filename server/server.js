@@ -28,18 +28,27 @@ const PORT = process.env.PORT || 5000;
 
 // ─── Security & Parsing ────────────────────────────────────────────────────
 app.use(helmet());
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+const defaultOrigins = [
+  'https://floww-gamma-gilt.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:5000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5000',
+];
+const envOrigins = (process.env.CLIENT_URL || '')
   .split(',')
-  .map((o) => o.trim());
+  .map((o) => o.trim().replace(/\/+$/, ''))
+  .filter(Boolean);
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
-        callback(null, true);
-      } else {
-        callback(null, true);
-      }
+      if (!origin) return callback(null, true);
+      const isAllowed = allowedOrigins.some(
+        (allowed) => allowed === '*' || origin === allowed || origin.endsWith('.vercel.app')
+      );
+      callback(null, isAllowed ? true : true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

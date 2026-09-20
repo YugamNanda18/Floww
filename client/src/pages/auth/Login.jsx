@@ -15,21 +15,27 @@ export default function Login() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const urlRole = searchParams.get('role');
+  const urlIdentifier = searchParams.get('identifier') || searchParams.get('rollNumber') || searchParams.get('email') || '';
+
   const [activeRole, setActiveRole] = useState(
     ['student', 'admin', 'superuser'].includes(urlRole) ? urlRole : 'student'
   );
 
-  const [form, setForm] = useState({ identifier: '', password: '' });
+  const [form, setForm] = useState({ identifier: urlIdentifier, password: '' });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Reset form when role changes
+  // Reset or pre-fill form when role or query params change
   useEffect(() => {
     if (urlRole && ['student', 'admin', 'superuser'].includes(urlRole)) {
       setActiveRole(urlRole);
     }
-  }, [urlRole]);
+    const currentId = searchParams.get('identifier') || searchParams.get('rollNumber') || searchParams.get('email');
+    if (currentId) {
+      setForm((prev) => ({ ...prev, identifier: currentId }));
+    }
+  }, [urlRole, searchParams]);
 
   // If already authenticated, redirect
   if (user) {

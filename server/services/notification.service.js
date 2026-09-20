@@ -11,6 +11,25 @@ import AuditLog from '../models/AuditLog.js';
 
 let transporter = null;
 
+export const getPortalBaseUrl = () => {
+  const envUrl = (process.env.CLIENT_URL || '').trim();
+
+  // If CLIENT_URL has multiple comma-separated entries, look for the public production one
+  if (envUrl) {
+    const origins = envUrl.split(',').map((o) => o.trim().replace(/\/+$/, '')).filter(Boolean);
+    const prodOrigin = origins.find((o) => !o.includes('localhost') && (o.startsWith('https://') || o.startsWith('http://')));
+    if (prodOrigin) return prodOrigin;
+  }
+
+  // If in production environment OR if CLIENT_URL is missing or points only to localhost,
+  // return the deployed Vercel production frontend URL
+  if (process.env.NODE_ENV === 'production' || !envUrl || envUrl.includes('localhost')) {
+    return 'https://floww-gamma-gilt.vercel.app';
+  }
+
+  return envUrl.replace(/\/+$/, '') || 'http://localhost:5173';
+};
+
 const getTransporter = () => {
   if (transporter) return transporter;
   if (process.env.SMTP_HOST && process.env.SMTP_USER) {
@@ -27,7 +46,7 @@ const getTransporter = () => {
 };
 
 export const sendPaymentConfirmation = async ({ to, name, amount, receiptNumber, semester }) => {
-  const portalUrl = process.env.CLIENT_URL || 'http://localhost:5173/login';
+  const portalUrl = `${getPortalBaseUrl()}/login`;
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
       <h2 style="color: #059669;">✅ Payment Successful Notice — LedgerX</h2>
@@ -96,7 +115,10 @@ export const sendRealtimeFeeDueReminder = async (params) => {
     throw new Error('Student record is required for fee due reminder.');
   }
 
-  const portalUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/login`;
+  const baseUrl = getPortalBaseUrl();
+  const studentIdentifier = student.rollNumber || student.email || '';
+  const portalUrl = `${baseUrl}/login?role=student&identifier=${encodeURIComponent(studentIdentifier)}`;
+  const cleanLoginUrl = `${baseUrl}/login`;
   const totalPayable = (totalOutstanding || 0) + (totalLateFee || 0);
 
   const totalOutstandingRs = ((totalOutstanding || 0) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2 });
@@ -166,7 +188,7 @@ export const sendRealtimeFeeDueReminder = async (params) => {
           </tr>
           <tr>
             <td style="padding: 4px 0; color: #64748b;">Direct Portal Link:</td>
-            <td style="padding: 4px 0;"><a href="${portalUrl}" style="color: #2563eb; font-weight: bold; text-decoration: underline;">${portalUrl}</a></td>
+            <td style="padding: 4px 0;"><a href="${portalUrl}" style="color: #2563eb; font-weight: bold; text-decoration: underline;">${cleanLoginUrl}</a></td>
           </tr>
         </table>
       </div>
